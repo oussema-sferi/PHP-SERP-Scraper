@@ -4,8 +4,6 @@
     <list default="true" id="93673ce7-0108-42e3-aa85-6959415e856f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MarkifyScraper.php" beforeDir="false" afterPath="$PROJECT_DIR$/MarkifyScraper.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/HelperService.php" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/HelperService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +68,7 @@
       <updated>1657845012690</updated>
       <workItem from="1657845017685" duration="29070000" />
       <workItem from="1658034824727" duration="69000" />
-      <workItem from="1658035808044" duration="2038000" />
+      <workItem from="1658035808044" duration="2661000" />
     </task>
     <servers />
   </component>

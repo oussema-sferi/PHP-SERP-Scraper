@@ -1,5 +1,4 @@
 <?php
-use Goutte\Client;
 class HelperService
 {
     const DOMAIN = 'https://search.ipaustralia.gov.au';
@@ -8,7 +7,7 @@ class HelperService
     public function getSinglePageData($crawler) : array
     {
         $output = $crawler->filter('#resultsTable > tbody > tr')->each(function ($node) {
-            // Mapping data
+            // Mapping Data
             $index = $node->filter('.table-index')->text();
             //
             $number = $node->filter('.number')->text();
@@ -58,5 +57,10 @@ class HelperService
     public function checkIfSinglePage($crawler) : bool
     {
         return $crawler->filter('.pagination-bottom > .right-aligned > .pagination-buttons > a:last-child')->filter('.disabled')->count() > 0;
+    }
+
+    public function checkIfNoResults($crawler) : bool
+    {
+        return $crawler->filter('.no-content')->count() > 0;
     }
 }

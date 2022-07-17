@@ -13,6 +13,12 @@ class MarkifyScraper
         $crawler = $client->request('GET', self::DOMAIN . "/trademarks/search/advanced");
         $form = $crawler->selectButton('Search')->form();
         $crawler = $client->submit($form, ['wv[0]' => $keyword]);
+        // If No Results Found
+        if($helper->checkIfNoResults($crawler))
+        {
+            echo 'No results found!';
+            return;
+        }
         $allResults = $helper->getSinglePageData($crawler);
         // Search Results Count
         $helper->getAllResultsCount($crawler);
@@ -22,13 +28,13 @@ class MarkifyScraper
             print_r($allResults);
             return;
         }
-        // If results pages are in more than one page
+        // If Results Pages Are In More Than One Page
         while(!$helper->checkIfSinglePage($crawler))
         {
-            // Automate clicking on next page button
+            // Automate Clicking On Next Page Button
             $link = $crawler->selectLink('Next page')->link();
             $crawler = $client->click($link);
-            //Appending next page results to the existing results
+            //Appending Next Page Results To The Existing results Array
             $allResults += $helper->getSinglePageData($crawler);
         }
         print_r($allResults);
