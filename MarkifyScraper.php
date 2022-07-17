@@ -1,65 +1,80 @@
 <?php
-require './Utils/HelperService.php';
+
 use Goutte\Client;
-class MarkifyScraper
+class HelperService
 {
-    private array $finalResult;
-    private $crawler;
-    private $client;
-    //private array $element = [];
-    //private int $counter = 0;
     const DOMAIN = 'https://search.ipaustralia.gov.au';
-    public function getData()
+    private array $element = [];
+    private array $result;
+    public function __construct()
     {
-        $keyword = readline('Enter Your search keyword: ');
-        //$test->number = "125";
-        if(!$keyword) return;
-        $helper = new HelperService();
-        $this->client = new Client();
+        $this->result = [];
+    }
+    public function scrapeData($crawler)
+    {
+        $output = $crawler->filter('#resultsTable > tbody > tr')->each(function ($node) {
+            //$this->counter++;
+            //$logoUrl = $node->filter('.image > img')->attr('src');
+            $index = $node->filter('.table-index')->text();
+            //echo $index;
 
-        $this->crawler = $this->client->request('GET', self::DOMAIN . "/trademarks/search/advanced");
-        // $crawler = $client->click($crawler->selectLink('Sign in')->link());
-        $form = $this->crawler->selectButton('Search')->form();
-        $this->crawler = $this->client->submit($form, ['wv[0]' => $keyword]);
-        // $header_car =  $crawler->filter("resultsTable")->text();
-        // $output = $crawler->filter('#resultsTable');
+            //
+            $number = $node->filter('.number')->text();
+            $this->element["number"]= $number;
 
-       $this->finalResult = $helper->scrapeData($this->crawler);
-        //var_dump(trim($this->crawler->filter('.pagination-bottom > .right-aligned > .pagination-buttons > a')->filter('.disabled')->text()));
+            //
+            if($node->filter('.image > img')->count() > 0)
+            {
+                $logoUrl = $node->filter('.image > img')->attr('src');
+            } else {
+                $logoUrl = "none";
+            }
+            $this->element["logo_url"]= $logoUrl;
 
-        if($this->crawler->filter('.pagination-bottom > .right-aligned > .pagination-buttons > a:last-child')->filter('.disabled')->count() > 0)
-        {
-            echo "yes";
-            var_dump($this->finalResult);
-            return;
-        }
-        /*$nodeCheck = $this->crawler->filter('.pagination-bottom > .right-aligned > .pagination-buttons > a:last-child')->filter('.disabled')->text();
-        var_dump($nodeCheck);
-        if(trim($this->crawler->filter('.pagination-bottom > .right-aligned > .pagination-buttons > a')->filter('.disabled')->text()) === "Next page")
-        {
-            echo "yes";
-            var_dump($this->finalResult);
-            return;
-        }*/
-        while($this->crawler->filter('.pagination-bottom > .right-aligned > .pagination-buttons > a:last-child')->filter('.disabled')->count() === 0)
-        {
-            $helper = new HelperService();
-            // Click on the "Security Advisories" link
-            $link = $this->crawler->selectLink('Next page')->link();
-            $this->crawler = $this->client->click($link);
+            $name = $node->filter('.words')->text();
+            $this->element["name"]= $name;
 
-            var_dump($this->crawler->filter('.pagination-bottom > .right-aligned > .pagination-count')->text());
-            $this->finalResult += $helper->scrapeData($this->crawler);
+            //
+            $classes = $node->filter('.classes')->text();
+            $this->element["classes"]= $classes;
 
-        }
+            //
+            if($node->filter('.status > div > span')->count() > 0)
+            {
+                $status = trim($node->filter('.status > div > span')->text());
+            } else {
+                $status = $node->filter('.status')->html();
+                //$status = $node->filter('.status')->html();
+                $status = trim(preg_replace('~<i(.*?)</i>~Usi', '', $status));
+            }
+            $colonIndex = strpos($status, ':');
+            if($colonIndex !== false)
+            {
+                $statusOne = substr($status, 0, $colonIndex);
+                $statusTwo = trim(substr($status, $colonIndex + 1));
+                $this->element["status1"]= $statusOne;
+                $this->element["status2"]= $statusTwo;
+            } else {
+                $this->element["status1"]= $status;
+                $this->element["status2"]= $status;
+            }
 
-        // Click on the "next page" link
-        /*$link = $crawler->selectLink('Security Advisories')->link();
-        $crawler = $client->click($link);*/
-       //echo 'Total search results : ' . $this->counter . PHP_EOL;
-      // print_r($this->finalResult );
-        //var_dump($this->counter);
-        //var_dump($_SERVER['SERVER_NAME']);
-        var_dump($this->finalResult);
+            //
+            $detailsPageUrl = $node->attr('data-markurl');
+            $this->element["details_page_url"]= self::DOMAIN . $detailsPageUrl;
+
+            //
+
+
+            // $status = $node->filter('.status > div > span')->text();
+
+            $this->result[$index] = json_encode($this->element, JSON_UNESCAPED_SLASHES);
+
+            //array_push($this->test, $response);
+            //var_dump($index);
+            // var_dump($this->element["status1"]);
+            //var_dump($this->element["status2"]);
+        });
+        return $this->result;
     }
 }
