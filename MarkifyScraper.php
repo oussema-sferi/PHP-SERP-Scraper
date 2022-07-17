@@ -3,14 +3,13 @@ require './Utils/HelperService.php';
 use Goutte\Client;
 class MarkifyScraper
 {
-    const DOMAIN = 'https://search.ipaustralia.gov.au';
     public function getData()
     {
         $keyword = readline('Enter Your search keyword: ');
         if(!$keyword) return;
         $helper = new HelperService();
         $client = new Client();
-        $crawler = $client->request('GET', self::DOMAIN . "/trademarks/search/advanced");
+        $crawler = $client->request('GET', HelperService::DOMAIN . "/trademarks/search/advanced");
         $form = $crawler->selectButton('Search')->form();
         $crawler = $client->submit($form, ['wv[0]' => $keyword]);
         // If No Results Found
@@ -19,10 +18,11 @@ class MarkifyScraper
             echo 'No results found!';
             return;
         }
+        // Get First Page Results
         $allResults = $helper->getSinglePageData($crawler);
-        // Search Results Count
+        // All Search Results Count
         $helper->getAllResultsCount($crawler);
-        // If results pages are in a single page
+        // If Results Pages Are In A Single Page
         if($helper->checkIfSinglePage($crawler))
         {
             print_r($allResults);
