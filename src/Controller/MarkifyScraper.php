@@ -1,5 +1,6 @@
 <?php
-require './Utils/HelperService.php';
+namespace App\Controller;
+use App\Services\HelperService;
 use Goutte\Client;
 class MarkifyScraper
 {
@@ -20,7 +21,7 @@ class MarkifyScraper
             echo 'No results found!';
             return;
         }
-        // If 1 Only Result Found
+        // If 1 Only Result Found --> (Because If We Have Just Only One Search Result, We Will Be Redirected To The Details Page Url Of This Result Automatically Once Submitted)
         if($helper->checkIfOnlyOneResult($crawler))
         {
             echo 'One only result found!'. PHP_EOL;

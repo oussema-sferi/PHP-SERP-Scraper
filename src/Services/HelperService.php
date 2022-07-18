@@ -1,4 +1,5 @@
 <?php
+namespace App\Services;
 class HelperService
 {
     const DOMAIN = 'https://search.ipaustralia.gov.au';
@@ -100,8 +101,8 @@ class HelperService
         }
         $detailsPageUrl = $crawler->getUri();
         $this->row["details_page_url"]= trim($detailsPageUrl);
-        // encoding element to JSON
-        $singleResult["1"] = json_encode($this->row, JSON_UNESCAPED_SLASHES);
-        return $singleResult;
+            // encoding element to JSON
+            $singleResult["1"] = json_encode($this->row, JSON_UNESCAPED_SLASHES);
+            return $singleResult;
     }
 }
