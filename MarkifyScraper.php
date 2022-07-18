@@ -6,7 +6,9 @@ class MarkifyScraper
     public function getData()
     {
         $keyword = readline('Enter Your search keyword: ');
+        // If No Search Keyword Provided
         if(!$keyword) return;
+        //
         $helper = new HelperService();
         $client = new Client();
         $crawler = $client->request('GET', HelperService::DOMAIN . "/trademarks/search/advanced");
@@ -16,6 +18,14 @@ class MarkifyScraper
         if($helper->checkIfNoResults($crawler))
         {
             echo 'No results found!';
+            return;
+        }
+        // If 1 Only Result Found
+        if($helper->checkIfOnlyOneResult($crawler))
+        {
+            echo 'One only result found!'. PHP_EOL;
+            $oneResult = $helper->getSingleResultData($crawler);
+            print_r($oneResult);
             return;
         }
         // Get First Page Results
