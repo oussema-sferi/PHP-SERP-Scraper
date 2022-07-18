@@ -2,5 +2,6 @@
 
 # Launch Steps: <br/>
 # 1 - Clone the project repo
-# 2 - 'composer install' <br/>
-# 3 - 'php index.php'                     
+# 2 - cd PHP-SERP-Scraper
+# 3 - composer install <br/>
+# 4 - php index.php                     
